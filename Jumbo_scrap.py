@@ -75,6 +75,7 @@ Chelas_final.to_csv('Chelas_DB.csv')
 from google.colab import files
 files.download('Chelas_DB.csv')
   
+#Descarga de fotos de cada producto
 import time
 from google.colab import auth
 auth.authenticate_user()

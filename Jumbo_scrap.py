@@ -36,7 +36,7 @@ for page in range(1,13):
   time.sleep(10)
 Cervezas.to_csv('Chelas_jumbo_480.csv')
 
-#Obtener las descripciones de cada chela, MEJORAR EL TEMA CON LOS ACENTOS :C
+#Obtener las descripciones de cada chela.
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:99.0) Gecko/20100101 Firefox/99.0',
     'Accept': '*/*',
@@ -70,8 +70,40 @@ for x in Cervezas['href']:
 
 Chelas_final=pd.concat([Cervezas,Descrip_chelas],axis=1)
 
-#pal colab
+#download DB in colab
 Chelas_final.to_csv('Chelas_DB.csv')
 from google.colab import files
 files.download('Chelas_DB.csv')
   
+import time
+from google.colab import auth
+auth.authenticate_user()
+
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
+from oauth2client.client import GoogleCredentials
+
+gauth = GoogleAuth()
+gauth.credentials = GoogleCredentials.get_application_default()
+drive = GoogleDrive(gauth)
+
+import requests
+from io import BytesIO
+from PIL import Image
+
+k=0
+FOLDER_ID = 'YOUR-ID-FOLDER' #Specify the folder ID you want to save
+for url in chelas_db['IMG']:
+  k+=1
+  file_name='chela'+str(k)+'.png'
+  try:
+    r = requests.get(url)
+    i = Image.open(BytesIO(r.content))
+    i.save(file_name)
+    f = drive.CreateFile({'title' : file_name, 'parents':[{'id' : FOLDER_ID }]})
+    f.SetContentFile(file_name)
+    f.Upload()
+    print('ok ',k)
+  except:
+    pass
+  time.sleep(3)

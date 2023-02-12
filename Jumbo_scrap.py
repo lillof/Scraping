@@ -8,7 +8,10 @@ import time
 Cervezas=pd.DataFrame(columns=['Product','Brand' ,'Price','IMG','href'])
 #La busqueda total tiene 13 paginas
 
+
+# Realizamos un barrido por las distintas paginas del producto que tiene el supermercado 
 for page in range(1,13):
+  # Obtenemos los heders de las request necesarios para realizar la conexion por pagina 
   headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:99.0) Gecko/20100101 Firefox/99.0',
     'Accept': '*/*',
@@ -27,16 +30,24 @@ for page in range(1,13):
 
   data = '{"selectedFacets":[{"key":"trade-policy","value":"39"}]}'
 
-
+  # Modificamos la URL con la respectiva pagina que se esta estudiando
   url='https://apijumboweb.smdigital.cl/catalog/api/v1/search/cervezas?page='+str(page)
+  # Creacion de la request POST para obtener la inforamcion de la pagina web
   response = requests.post(url, headers=headers, data=data)
+  # La informacion de respuesta la obtenemos en JSON
   data=json.loads(response.text)
+  
+  # Separacion de la informacion del JSON por producto encontrado en la pagina web
   for i in range(0,len(data['products'])):
     Cervezas=Cervezas.append({'Product' : data['products'][i]['productName'] ,'Brand':data['products'][i]['brand'] ,'Price' : data['products'][i]['items'][0]['sellers'][0]['commertialOffer']['Price'], 'IMG' : data['products'][i]['items'][0]['images'][0]['imageUrl'],'href' : data['products'][i]['linkText']+'/p'},ignore_index=True)
-  time.sleep(10)
-Cervezas.to_csv('Chelas_jumbo_480.csv')
+  time.sleep(10) # Tiempo de descanso del proceso 
 
-#Obtener las descripciones de cada chela.
+  # Guadado de la informacion en CSV
+  Cervezas.to_csv('Chelas_jumbo_480.csv')
+  
+#########################################################################
+# Header de request para la obtencion las descripciones de cada cerveza #
+#########################################################################
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:99.0) Gecko/20100101 Firefox/99.0',
     'Accept': '*/*',
@@ -56,6 +67,10 @@ headers = {
 data = '{"selectedFacets":[{"key":"trade-policy","value":"39"}]}'
 Descrip_chelas=pd.DataFrame(columns=['Description'])
 
+################################################################################
+# Uso de BEAUTIFULSOUP para la obtencion de las descripciones de los productos #
+################################################################################
+
 for x in Cervezas['href']:
   url='http://www.jumbo.cl/'+x
   r=requests.post(url, headers=headers, data=data)
@@ -67,10 +82,15 @@ for x in Cervezas['href']:
     Descrip_chelas=Descrip_chelas.append({'Description':'None'},ignore_index=True)
   time.sleep(2)
 
-
+# Concatenacion de la inforamcion obtenida por el metodo bruto mas el metodo de beatifulsoup
 Chelas_final=pd.concat([Cervezas,Descrip_chelas],axis=1)
 
-#download DB in colab
+
+
+########################
+# download DB in colab #
+########################
+
 Chelas_final.to_csv('Chelas_DB.csv')
 from google.colab import files
 files.download('Chelas_DB.csv')

@@ -8,8 +8,10 @@ import time
 Cervezas=pd.DataFrame(columns=['Product','Brand' ,'Price','IMG','href'])
 #La busqueda total tiene 13 paginas
 
+###################################################################
+# Informacion por catalogo de paginas del respectivo supermercado #
+###################################################################
 
-# Realizamos un barrido por las distintas paginas del producto que tiene el supermercado 
 for page in range(1,13):
   # Obtenemos los heders de las request necesarios para realizar la conexion por pagina 
   headers = {

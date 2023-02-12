@@ -12,3 +12,4 @@ En el proceso, se separan dos etapas, en la cual se obtienen la informacion del 
       Obtencion_de_info_general-->Obtencion_de_link_especifico_de_producto;
       Obtencion_de_link_especifico_de_producto-->Obtencion_de_info_especifica;
 ```
+Para la obtencion de headers, es posible utilizar herramientas de inspector, burp o postman

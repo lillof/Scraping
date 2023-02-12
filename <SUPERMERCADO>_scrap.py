@@ -4,7 +4,7 @@ import json
 from bs4 import BeautifulSoup
 import time
 
-#Sacamos del jumbo, al buscar en la barra "Cervezas"
+#Sacamos del <SUPERMERCADO>, al buscar en la barra "Cervezas"
 Cervezas=pd.DataFrame(columns=['Product','Brand' ,'Price','IMG','href'])
 #La busqueda total tiene 13 paginas
 
@@ -19,11 +19,11 @@ for page in range(1,13):
     'Accept-Encoding': 'gzip, deflate, br',
     'Content-Type': 'application/json',
     'x-api-key': 'IuimuMneIKJd3tapno2Ag1c1WcAES97j',
-    'Origin': 'https://www.jumbo.cl',
+    'Origin': 'https://www.<SUPERMERCADO>.cl',
     'Sec-Fetch-Dest': 'empty',
     'Sec-Fetch-Mode': 'cors',
     'Sec-Fetch-Site': 'cross-site',
-    'Referer': 'https://www.jumbo.cl/',
+    'Referer': 'https://www.<SUPERMERCADO>.cl/',
     'Connection': 'keep-alive',
     'TE': 'trailers',
   }
@@ -31,7 +31,7 @@ for page in range(1,13):
   data = '{"selectedFacets":[{"key":"trade-policy","value":"39"}]}'
 
   # Modificamos la URL con la respectiva pagina que se esta estudiando
-  url='https://apijumboweb.smdigital.cl/catalog/api/v1/search/cervezas?page='+str(page)
+  url='https://api<SUPERMERCADO>web.smdigital.cl/catalog/api/v1/search/cervezas?page='+str(page)
   # Creacion de la request POST para obtener la inforamcion de la pagina web
   response = requests.post(url, headers=headers, data=data)
   # La informacion de respuesta la obtenemos en JSON
@@ -43,7 +43,7 @@ for page in range(1,13):
   time.sleep(10) # Tiempo de descanso del proceso 
 
   # Guadado de la informacion en CSV
-  Cervezas.to_csv('Chelas_jumbo_480.csv')
+  Cervezas.to_csv('Chelas_<SUPERMERCADO>_480.csv')
   
 #########################################################################
 # Header de request para la obtencion las descripciones de cada cerveza #
@@ -55,11 +55,11 @@ headers = {
     'Accept-Encoding': 'gzip, deflate, br',
     'Content-Type': 'application/json',
     'x-api-key': 'IuimuMneIKJd3tapno2Ag1c1WcAES97j',
-    'Origin': 'https://www.jumbo.cl',
+    'Origin': 'https://www.<SUPERMERCADO>.cl',
     'Sec-Fetch-Dest': 'empty',
     'Sec-Fetch-Mode': 'cors',
     'Sec-Fetch-Site': 'cross-site',
-    'Referer': 'https://www.jumbo.cl/',
+    'Referer': 'https://www.<SUPERMERCADO>.cl/',
     'Connection': 'keep-alive',
     'TE': 'trailers',
 }
@@ -72,7 +72,7 @@ Descrip_chelas=pd.DataFrame(columns=['Description'])
 ################################################################################
 
 for x in Cervezas['href']:
-  url='http://www.jumbo.cl/'+x
+  url='http://www.<SUPERMERCADO>.cl/'+x
   r=requests.post(url, headers=headers, data=data)
   soup=BeautifulSoup(r.text)
   try:
